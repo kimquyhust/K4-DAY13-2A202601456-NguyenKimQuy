@@ -87,6 +87,10 @@ pip install -r requirements.txt
 cp .env.example .env                 # Windows: Copy-Item .env.example .env
 ```
 
+Leader đã chạy thử toàn bộ trên macOS + Python 3.12: cài đặt sạch, `pytest` xanh, `validate_dashboard.py` báo 6/6. Nếu `pip install` báo `ResolutionImpossible` ở lần đầu, chạy lại lệnh đó một lần nữa là được.
+
+**Kiểm tra port 8000 trước khi chạy:** `scripts/load_test.py` và `scripts/inject_incident.py` hard-code `http://127.0.0.1:8000`. Nếu máy bạn đã có app khác chiếm port đó (`lsof -nP -iTCP:8000 -sTCP:LISTEN`), phải tắt app kia trước, nếu không load test sẽ bắn nhầm đích.
+
 Điền key Langfuse do Lab Coach cấp vào `.env` (không commit). Sau đó:
 
 ```bash
@@ -116,7 +120,9 @@ Bốn TODO ở dòng 13, 16, 20, 28:
 
 ### Việc 2 — Bật PII scrubbing tại [app/logging_config.py:45](../app/logging_config.py#L45)
 
-Bỏ comment `scrub_event` trong list processor. **Vị trí quyết định đúng/sai:** phải nằm **trước** `JsonlFileProcessor()`. Nếu đặt sau, console sạch nhưng `data/logs.jsonl` vẫn còn PII nguyên văn và validator vẫn trừ 30 điểm.
+Bỏ comment `scrub_event` trong list processor và đặt **trước** `JsonlFileProcessor()` — nếu đặt sau, console sạch nhưng file `data/logs.jsonl` mới là thứ validator đọc.
+
+**Đo thực tế của leader:** baseline đã `[PASSED] PII scrubbing` với 0 leak **dù processor còn đang comment**, vì `/chat` chỉ log preview qua `summarize_text()` và hàm này đã gọi `scrub_text()` ([app/pii.py:22-24](../app/pii.py#L22-L24)). Nên khi trình bày, đừng nói "bật processor nên hết PII" — vai trò thật của `scrub_event` là **defense-in-depth** cho những field không đi qua `summarize_text` (ví dụ log bạn tự thêm sau này). Đây gần như chắc chắn là một câu hỏi khi chấm.
 
 ### Việc 3 — Enrich log tại [app/main.py:47](../app/main.py#L47)
 
@@ -433,4 +439,32 @@ Mỗi bước phải kèm bằng chứng cụ thể:
 - **`prompt_source: local-fallback`** trong trace → sai key hoặc sai tên biến template, không phải lỗi code.
 - **`data/logs.jsonl` cộng dồn qua nhiều lần chạy** → dashboard và validator lẫn dữ liệu cũ. Xoá file trước mỗi lần đo chính thức, nhất là trước baseline của challenge.
 - **Chạy challenge sớm khi chưa merge R1** → log thiếu correlation ID, không chứng minh được luồng Metrics → Traces → Logs.
+- **Port 8000 bị app khác chiếm** → load test chạy "thành công" nhưng bắn vào nhầm service. Kiểm tra `lsof -nP -iTCP:8000 -sTCP:LISTEN` trước khi đo.
 
+## 11. Công cụ chung của nhóm
+
+`scripts/analyze_logs.py` (leader viết) dựng lại toàn bộ bằng chứng từ `data/logs.jsonl` bằng một lệnh — p50/p95/p99, error rate và breakdown, cost, token, quality, danh sách request chậm nhất kèm `correlation_id` để mở trace, và prompt version đang phục vụ:
+
+```bash
+python scripts/analyze_logs.py                                   # toàn bộ log
+python scripts/analyze_logs.py --feature monitoring --top 5      # lọc theo feature
+python scripts/analyze_logs.py --threshold-ms 2000 --out submission/evidence/r4-log-analysis.md
+```
+
+Script tự cảnh báo khi log chưa có correlation ID (chưa merge R1) hoặc chưa có event `prompt_resolved` (chưa merge R2) — dùng được như checklist tích hợp nhanh. Ai cũng chạy được, nhưng file thuộc quyền sở hữu của leader.
+
+## 12. Số đo tham chiếu từ lần diễn tập của leader (2026-08-11)
+
+Dùng để đối chiếu, nếu máy bạn ra số lệch xa thì môi trường có vấn đề:
+
+| Chỉ số | Bình thường | Khi bật `rag_slow` |
+|---|---:|---:|
+| latency p50 / p95 (`/metrics`) | 155 ms / 155 ms | 2659 ms / 2660 ms |
+| latency client đo được (max, `--concurrency 5`) | ~835 ms | ~13 350 ms |
+| error rate | 0% | 0% |
+| tokens_out tổng / cost tổng | 664 / 0,0105 USD | 677 / 0,0107 USD |
+| quality trung bình | 0,84 | 0,84 |
+| `validate_logs.py` (trước khi R1 làm) | 30/100 | — |
+| `pytest` | 30 passed | — |
+
+Điểm đáng chú ý cho cả nhóm: chỉ latency đổi, còn error, cost, token và quality **không đổi** — chính điều đó loại trừ `tool_fail` và `cost_spike` và khoanh vùng thẳng vào tầng retrieval.
