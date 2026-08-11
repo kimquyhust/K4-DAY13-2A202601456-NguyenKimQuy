@@ -1,19 +1,19 @@
 alerts:
-  - name: TODO_alert_1
-    severity: TODO
-    condition: TODO
+  - name: high_p95_latency
+    severity: P2
+    condition: "p95 latency_ms > 3000 for 5 minutes"
     type: symptom-based
-    owner: TODO
+    owner: Nguyen Kim Quy
     runbook: docs/alerts.md#alert-1
-  - name: TODO_alert_2
-    severity: TODO
-    condition: TODO
+  - name: elevated_error_rate
+    severity: P1
+    condition: "error_rate_pct > 2 for 5 minutes"
     type: symptom-based
-    owner: TODO
+    owner: Nguyen Kim Quy
     runbook: docs/alerts.md#alert-2
-  - name: TODO_alert_3
-    severity: TODO
-    condition: TODO
+  - name: quality_drop
+    severity: P3
+    condition: "mean quality_score < 0.75 for 15 minutes"
     type: symptom-based
-    owner: TODO
+    owner: Nguyen Kim Quy
     runbook: docs/alerts.md#alert-3

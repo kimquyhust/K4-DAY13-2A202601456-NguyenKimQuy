@@ -9,8 +9,8 @@
 
 ## 2. Kết quả kỹ thuật
 
-- Điểm `validate_logs.py`:
-- Tổng số traces:
+- Điểm `validate_logs.py`: 30/100
+- Tổng số traces: 12 trace cho phần tracing/prompt (10 trace chạy hai label và 2 trace kiểm chứng rollback)
 - Số PII leak còn lại:
 - Link/đường dẫn dashboard:
 
@@ -23,11 +23,15 @@
 
 ## 4. Prompt versioning
 
-- Prompt name:
-- Version/label baseline:
-- Version/label candidate:
+- Prompt name: `day13-chat` (text prompt; đúng ba biến `{{feature}}`, `{{docs}}`, `{{message}}`)
+- Version/label baseline: v1 / `production`
+- Version/label candidate: v2 / `staging`
 - Trace ID của mỗi version:
+  - production/v1: [`bc9879625e05c9689bffaddd8ced2518`](https://cloud.langfuse.com/project/cmsob02dn0100ad0hubskvz4q/traces/bc9879625e05c9689bffaddd8ced2518)
+  - staging/v2: [`33fce3f382906a3ad4554ede9e1f3175`](https://cloud.langfuse.com/project/cmsob02dn0100ad0hubskvz4q/traces/33fce3f382906a3ad4554ede9e1f3175)
 - Bằng chứng đổi label hoặc rollback:
+  - Trước rollback, chuyển `production` sang v2: [`21cfce66c33bfe447919b18a21f516a1`](https://cloud.langfuse.com/project/cmsob02dn0100ad0hubskvz4q/traces/21cfce66c33bfe447919b18a21f516a1)
+  - Sau rollback, `production` trở về v1: [`79009643d7361472c8a95cdf2f60bb29`](https://cloud.langfuse.com/project/cmsob02dn0100ad0hubskvz4q/traces/79009643d7361472c8a95cdf2f60bb29)
 
 ## 5. Dashboard, SLO và alerts
 
