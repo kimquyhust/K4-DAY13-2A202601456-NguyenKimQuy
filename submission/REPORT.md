@@ -9,9 +9,9 @@
 
 ## 2. Kết quả kỹ thuật
 
-- Điểm `validate_logs.py`: 30/100
+- Điểm `validate_logs.py`: 100/100
 - Tổng số traces: 12 trace cho phần tracing/prompt (10 trace chạy hai label và 2 trace kiểm chứng rollback)
-- Số PII leak còn lại:
+- Số PII leak còn lại: 0
 - Link/đường dẫn dashboard:
 
 ## 3. Logging và tracing
