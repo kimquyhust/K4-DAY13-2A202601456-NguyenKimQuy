@@ -1,15 +1,10 @@
 # Báo cáo Day 13 Observability
 
-> Trạng thái: đã merge cả 4 nhánh vào `main`. Số liệu dưới đây được đo lại trên bản merge
-> ngày 2026-08-11, không phải số cũ của từng nhánh. Evidence đã đủ; chỉ còn điền commit SHA
-> cuối ở mục 1 khi push.
-
 ## 1. Thông tin nhóm
 
 - Tên nhóm: K4 — 2A202601456
 - Repository URL: https://github.com/kimquyhust/K4-DAY13-2A202601456-NguyenKimQuy
-- Commit SHA hoàn thiện nội dung: `ebf67550ef04db0b3ac597a3fdc189622d2feaf1` (nhánh `main`)
-- Commit SHA cuối cùng trên `main` là commit điền chính dòng này — lấy bằng `git rev-parse HEAD` sau khi push, và đó là SHA nộp trên Codelabs.
+- Commit SHA hoàn thiện nội dung: 1a5bf9dad0f0f7ba6f07f2873064662148da3392
 - Thành viên và vai trò:
 
 | Thành viên | Vai trò | Branch |
