@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import re
 from pathlib import Path
 import yaml
@@ -69,3 +70,19 @@ def test_alert_runbook_anchors_exist_in_alerts_md() -> None:
             assert f"#{anchor}" in doc_content or f"id=\"{anchor}\"" in doc_content, (
                 f"Anchor '{anchor}' không tìm thấy trong docs/alerts.md"
             )
+
+
+def test_latency_alert_uses_official_challenge_threshold() -> None:
+    alerts = yaml.safe_load(
+        (REPO_ROOT / "config" / "alert_rules.yaml").read_text(encoding="utf-8")
+    )["alerts"]
+    challenge = json.loads(
+        (REPO_ROOT / "config" / "challenge.json").read_text(encoding="utf-8")
+    )
+
+    latency_alert = next(
+        alert for alert in alerts if alert["name"] == "high_p95_latency"
+    )
+    threshold_ms = challenge["latency_threshold_ms"]
+
+    assert f"> {threshold_ms} ms" in latency_alert["condition"]

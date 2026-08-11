@@ -1,7 +1,7 @@
 alerts:
   - name: high_p95_latency
     severity: P2
-    condition: p95 latency > 3000 ms duy trì 5 phút
+    condition: p95 latency > 2000 ms duy trì 5 phút
     type: symptom-based
     owner: Nguyễn Văn Quân
     runbook: docs/alerts.md#alert-1

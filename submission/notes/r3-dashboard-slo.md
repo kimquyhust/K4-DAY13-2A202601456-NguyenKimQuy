@@ -24,7 +24,7 @@ Phụ trách xây dựng hệ thống giám sát trực quan (Dashboard), địn
 
 ### B. Cấu hình Alert Rules (`config/alert_rules.yaml`)
 Thay thế toàn bộ chuỗi `TODO` bằng 3 quy tắc cảnh báo dựa trên triệu chứng (symptom-based):
-1. **`high_p95_latency`** (Severity: `P2`): Kích hoạt khi latency p95 > 3000 ms duy trì liên tục trong 5 phút. Owner: `Nguyễn Văn Quân`.
+1. **`high_p95_latency`** (Severity: `P2`): Kích hoạt khi latency p95 > 2000 ms duy trì liên tục trong 5 phút. Đây là ngưỡng cảnh báo sớm khớp `latency_threshold_ms` của challenge; dashboard vẫn giữ SLO line 3000 ms theo contract. Owner: `Nguyễn Văn Quân`.
 2. **`elevated_error_rate`** (Severity: `P1`): Kích hoạt khi tỷ lệ lỗi > 2% duy trì liên tục trong 5 phút. Owner: `Nguyễn Văn Quân`.
 3. **`quality_drop`** (Severity: `P3`): Kích hoạt khi điểm chất lượng trung bình < 0.75 duy trì liên tục trong 15 phút. Owner: `Nguyễn Văn Quân`.
 
@@ -46,11 +46,11 @@ Biên soạn tài liệu Runbook cho cả 3 cảnh báo với 3 bước kiểm t
 
 ### Kiểm tra hợp lệ bằng Script & Pytest
 - `python scripts/validate_dashboard.py` -> In kết quả `HỢP LỆ: 6/6 panel có trong dashboard contract.`
-- `python -m pytest -q` -> Tất cả **25 unit tests** đều PASS xanh.
+- `python -m pytest -q -p no:cacheprovider` -> Tất cả **45 unit tests** đều PASS (2 cảnh báo deprecation của FastAPI, không có lỗi test).
 
 ### Bằng chứng hình ảnh (Nộp tại `submission/evidence/`)
 - `r3-validate-dashboard.png`: Màn hình terminal chạy validator dashboard thành công 6/6 panel.
 - `r3-dashboard-6panel.png`: Ảnh chụp giao diện Streamlit Dashboard hiển thị trọn vẹn 6 panel với đầy đủ thông số, đơn vị và đường ngưỡng threshold.
 - `r3-dashboard-before.png`: Dữ liệu baseline trên Dashboard trước khi kích hoạt incident practice.
-- `r3-dashboard-after-ragslow.png`: Dữ liệu trên Dashboard sau khi kích hoạt incident `--scenario rag_slow` (thấy rõ p95 latency tăng vượt ngưỡng 3000ms).
+- `r3-dashboard-after-ragslow.png`: Dữ liệu trên Dashboard sau khi kích hoạt incident `--scenario rag_slow` (thấy rõ p95 latency vượt ngưỡng cảnh báo challenge 2000 ms).
 - `r3-alert-rules.png`: Cấu hình file `config/alert_rules.yaml` và `docs/alerts.md` hợp lệ không còn TODO.

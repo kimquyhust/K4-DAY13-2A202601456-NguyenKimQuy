@@ -6,11 +6,11 @@ Mỗi alert phải dựa trên triệu chứng người dùng hoặc SLO, không
 
 - **Tên**: `high_p95_latency`
 - **Severity**: P2
-- **SLI/SLO liên quan**: `latency_p95_ms` (SLO ≤ 3000 ms)
-- **Điều kiện và thời gian duy trì**: p95 latency > 3000 ms duy trì 5 phút
+- **SLI/SLO liên quan**: `latency_p95_ms` (dashboard SLO ≤ 3000 ms; ngưỡng cảnh báo sớm của challenge: 2000 ms)
+- **Điều kiện và thời gian duy trì**: p95 latency > 2000 ms duy trì 5 phút
 - **Ảnh hưởng tới người dùng**: Người dùng gặp tình trạng phản hồi chậm, thời gian chờ câu trả lời kéo dài gây gián đoạn trải nghiệm chat.
 - **Ba bước kiểm tra đầu tiên**:
-  1. **Metrics**: Kiểm tra endpoint `/metrics` hoặc panel `latency` trên Dashboard để xác định p95 latency vượt 3000ms.
+  1. **Metrics**: Kiểm tra endpoint `/metrics` hoặc panel `latency` trên Dashboard để xác định p95 latency vượt ngưỡng cảnh báo sớm 2000 ms.
   2. **Traces**: Kiểm tra danh sách trace trên Langfuse, tìm các trace có latency lớn nhất và xem chi tiết các span (đặc biệt là bước retrieval) để tìm nút thắt.
   3. **Logs**: Truy vấn `data/logs.jsonl` theo `correlation_id` hoặc tìm sự kiện `response_sent` có `latency_ms` lớn để đối soát chi tiết request.
 - **Mitigation tạm thời**: Tắt incident thử nghiệm nếu đang bật (`/incidents/<name>/disable`), áp dụng timeout cho bước vector search retrieval, hoặc kích hoạt fallback cache.
