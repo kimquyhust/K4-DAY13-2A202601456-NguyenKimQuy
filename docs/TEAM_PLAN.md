@@ -468,3 +468,63 @@ Dùng để đối chiếu, nếu máy bạn ra số lệch xa thì môi trườ
 | `pytest` | 30 passed | — |
 
 Điểm đáng chú ý cho cả nhóm: chỉ latency đổi, còn error, cost, token và quality **không đổi** — chính điều đó loại trừ `tool_fail` và `cost_spike` và khoanh vùng thẳng vào tầng retrieval.
+
+## 13. Cơ chế theo dõi tiến độ
+
+### Luật nền: leader chỉ tin thứ đã push
+
+Tiến độ không tính bằng lời nói. Ai cũng phải **push ít nhất 30 phút một lần**, kể cả khi code chưa chạy — commit dở vẫn push được:
+
+```bash
+git add <file của bạn> && git commit -m "wip: đang làm correlation id" && git push origin <branch của bạn>
+```
+
+Code nằm trên máy cá nhân = với nhóm là chưa tồn tại. Không push thì leader buộc phải coi phần đó là 0%.
+
+### Lệnh xem tiến độ
+
+```bash
+python scripts/check_progress.py              # bảng tổng, tự fetch origin
+python scripts/check_progress.py --role R1    # soi chi tiết một người
+```
+
+Script đọc thẳng nội dung branch trên remote và kiểm từng dấu hiệu cụ thể trong code — ví dụ `app/middleware.py` còn `correlation_id = "MISSING"` hay chưa, `scrub_event` đã hết comment chưa, `config/alert_rules.yaml` còn chữ `TODO` không, `dashboard/app.py` đã tồn tại chưa. Cột **Im lặng** là thời gian từ lần push cuối; quá 45 phút mà chưa xong sẽ hiện `<-- CẦN GIỤC`.
+
+Leader chạy lệnh này ở đầu mỗi gate bên dưới, chụp màn hình đưa vào nhóm chat thay cho việc hỏi từng người.
+
+### Ba cổng kiểm tra — mỗi cổng phải *cho xem*, không phải *nói*
+
+| Gate | Mốc | Người | Phải cho xem được | Nếu chưa đạt |
+|---|---|---|---|---|
+| **G1** | 1:00 | Việt Anh | `python scripts/validate_logs.py` ≥ 80/100 trên máy mình | Cả nhóm dừng việc riêng, dồn vào G1. Không có G1 thì G3 và challenge đều vô nghĩa |
+| | | Minh Đạt | `/health` trả `tracing_enabled: true` và prompt `day13-chat` v1 đã tồn tại trên Langfuse | Nếu 20 phút nữa vẫn chưa có key → chuyển sang hoàn thiện log `prompt_resolved` trước, tracing làm sau |
+| | | Văn Quân | `dashboard/app.py` mở được, dù mới có 2–3 panel | Cắt xuống: ưu tiên panel latency + errors, 4 panel còn lại làm sau |
+| **G2** | 2:00 | Việt Anh | 100/100 + 3 ảnh evidence đã nằm trong `submission/evidence/` | Chốt ở mức điểm đang có, chuyển sang viết notes |
+| | | Minh Đạt | 2 trace ID của 2 label + ảnh rollback | Bỏ phần candidate v2 tinh chỉnh, chỉ cần v1/v2 khác nhau tối thiểu là đủ điểm |
+| | | Văn Quân | Đủ 6 panel + `alert_rules.yaml` hết `TODO` | Ưu tiên alert + runbook (chấm điểm) hơn là làm dashboard đẹp |
+| **G3** | 3:00 | Cả nhóm | Branch đã merge vào `main`, `pytest` xanh | Leader merge hộ phần đã push được, phần dở ghi rõ trong REPORT là chưa hoàn thành |
+| **G4** | 3:30 | Cả nhóm | `submission/notes/rN-*.md` đã push | Không có notes = không có dữ liệu cho mục 7 của REPORT = mất điểm cá nhân của chính người đó |
+
+### Mẫu tin nhắn giục — dùng đúng mức, đừng nhảy cóc
+
+**Mức 1 — nhắc trước hạn 15 phút (không mang tính chất vấn):**
+
+> @tên còn 15 phút tới G1. Mình đang thấy branch `feat/...` chưa có commit mới. Cần mình hỗ trợ chỗ nào không, hay chỉ là chưa push?
+
+**Mức 2 — quá hạn, hỏi bằng số liệu cụ thể:**
+
+> @tên G1 quá hạn 10 phút rồi. `check_progress.py` đang báo 2/8: còn `clear_contextvars`, header `x-request-id`, `scrub_event` và enrich ở `/chat`. Bạn đang kẹt ở cái nào? Push cái đang có lên trước để mình xem cùng nhé.
+
+**Mức 3 — cắt scope, leader ra quyết định:**
+
+> @tên mình cắt scope phần này để giữ tiến độ chung: bỏ mục "PII pattern bổ sung" và "bonus scrub đệ quy", chỉ giữ 4 TODO bắt buộc. Deadline mới 15 phút nữa. Phần bị cắt mình ghi rõ trong REPORT là đã cân nhắc và bỏ có chủ đích, không ảnh hưởng điểm cá nhân của bạn.
+
+### Thứ tự cắt scope khi trễ giờ
+
+Cắt từ trên xuống, **không bao giờ cắt phần dưới cùng**:
+
+1. Bonus: scrub đệ quy, cost optimization, audit log riêng.
+2. Dashboard đẹp: màu, layout, auto-refresh — giữ đúng 6 panel là đủ.
+3. Prompt v2 tinh chỉnh nội dung — chỉ cần khác v1 và gắn được label.
+4. PII pattern mở rộng — 4 pattern gốc đã qua validator.
+5. **Không cắt:** correlation ID + enrich log, 6 panel đúng contract, alert + runbook, điều tra challenge, `REPORT.md`, notes cá nhân của từng người. Đây là phần trực tiếp ra điểm.
