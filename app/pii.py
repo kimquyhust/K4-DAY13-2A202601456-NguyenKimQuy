@@ -8,8 +8,15 @@ PII_PATTERNS: dict[str, str] = {
     "phone_vn": r"(?<!\d)(?:\+84|0)(?:[ .-]?\d){9}(?!\d)",
     "cccd": r"\b\d{12}\b",
     "credit_card": r"\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b",
-    "passport_vn": r"\b[A-Z]\d{7}\b",
-    "address_vn": r"(?i)\b(?:số nhà|đường|phường|quận)\b[ \t]*[^\s,;。!?]{2,}(?:[ \t]+[^\s,;。!?]{1,}){0,3}",
+    # Hộ chiếu VN dùng tiền tố B/C/N/P; [A-Z] chung sẽ nuốt cả mã kỹ thuật kiểu "X1234567".
+    "passport_vn": r"\b[BCNP]\d{7}\b",
+    # Không dùng (?i) toàn cục: inline flag của Python áp cho cả pattern và vô hiệu hoá [A-Z],
+    # khiến "đường dẫn", "đường truyền" bị coi là địa chỉ. Sau từ khoá phải là số hoặc tên riêng viết hoa.
+    "address_vn": (
+        r"(?:[Ss]ố nhà|[Nn]gõ|[Nn]gách)\s*\d+[^,;\n]*"
+        r"|(?:[Đđ]ường|[Pp]hố|[Pp]hường|[Xx]ã|[Qq]uận|[Hh]uyện)"
+        r"\s+(?:\d+|[A-ZĐÀ-Ỹ][^\s,;]*(?:\s+[A-ZĐÀ-Ỹ][^\s,;]*)*)"
+    ),
 }
 
 

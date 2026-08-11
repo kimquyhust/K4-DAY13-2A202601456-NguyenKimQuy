@@ -44,6 +44,21 @@ def test_scrub_vietnamese_address_keywords() -> None:
     assert "Nguyễn Trãi" not in out
 
 
+def test_technical_text_is_not_mistaken_for_an_address() -> None:
+    """Log preview là thứ đọc khi điều tra sự cố, redact nhầm là mất luôn manh mối."""
+    for text in (
+        "Đường dẫn dashboard nằm ở docs/dashboard-spec.md",
+        "Cách tối ưu đường truyền khi p95 tăng cao là gì?",
+        "Xã hội hóa chi phí quan sát",
+    ):
+        assert scrub_text(text) == text
+
+
+def test_technical_id_is_not_mistaken_for_a_passport() -> None:
+    text = "Model GPT4 xử lý request X1234567 trong 200ms"
+    assert scrub_text(text) == text
+
+
 def test_correlation_id_format(monkeypatch, tmp_path: Path) -> None:
     log_path = tmp_path / "logs.jsonl"
     monkeypatch.setattr(logging_config, "LOG_PATH", log_path)
