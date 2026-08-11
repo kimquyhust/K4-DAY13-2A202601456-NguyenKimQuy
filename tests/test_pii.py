@@ -30,11 +30,11 @@ def test_scrub_common_vietnamese_phone_formats() -> None:
         assert phone_number not in out
         assert "REDACTED_PHONE_VN" in out
 
-
 def test_scrub_vietnamese_passport() -> None:
     out = scrub_text("Passport number C1234567 issued in Hanoi")
     assert "C1234567" not in out
     assert "REDACTED_PASSPORT_VN" in out
+    assert scrub_text("req-a1234567") == "req-a1234567"
 
 
 def test_scrub_vietnamese_address_keywords() -> None:

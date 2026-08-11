@@ -24,17 +24,22 @@ class JsonlFileProcessor:
 
 
 def _scrub_value(value: Any) -> Any:
+    """Recursively redact strings before structlog serializes an event."""
     if isinstance(value, str):
         return scrub_text(value)
     if isinstance(value, dict):
-        return {k: _scrub_value(v) for k, v in value.items()}
+        return {key: _scrub_value(item) for key, item in value.items()}
     if isinstance(value, list):
-        return [_scrub_value(v) for v in value]
+        return [_scrub_value(item) for item in value]
+    if isinstance(value, tuple):
+        return tuple(_scrub_value(item) for item in value)
     return value
 
 
 def scrub_event(_: Any, __: str, event_dict: dict[str, Any]) -> dict[str, Any]:
-    return _scrub_value(event_dict)
+    for key, value in event_dict.items():
+        event_dict[key] = _scrub_value(value)
+    return event_dict
 
 
 
@@ -45,9 +50,9 @@ def configure_logging() -> None:
             merge_contextvars,
             structlog.processors.add_log_level,
             structlog.processors.TimeStamper(fmt="iso", utc=True, key="ts"),
-            scrub_event,
             structlog.processors.StackInfoRenderer(),
             structlog.processors.format_exc_info,
+            scrub_event,
             JsonlFileProcessor(),
             structlog.processors.JSONRenderer(),
         ],

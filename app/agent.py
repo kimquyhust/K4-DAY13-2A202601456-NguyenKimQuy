@@ -4,11 +4,14 @@ import time
 from dataclasses import dataclass
 
 from . import metrics
+from .logging_config import get_logger
 from .mock_llm import FakeLLM
 from .mock_rag import retrieve
 from .pii import hash_user_id, summarize_text
 from .prompt_management import resolve_prompt
 from .tracing import get_langfuse_client, observe, tracing_enabled
+
+log = get_logger()
 
 
 @dataclass
@@ -37,6 +40,19 @@ class LabAgent:
             docs=docs,
             message=message,
             enabled=tracing_enabled(),
+        )
+        log.info(
+            "prompt_resolved",
+            service="agent",
+            payload={
+                "prompt_name": prompt.name,
+                "prompt_label": prompt.label,
+                "prompt_version": prompt.version,
+                "prompt_source": prompt.source,
+                "trace_id": getattr(
+                    langfuse_client, "get_current_trace_id", lambda: None
+                )(),
+            },
         )
         response = self.llm.generate(prompt.text)
         quality_score = self._heuristic_quality(message, response.text, docs)
