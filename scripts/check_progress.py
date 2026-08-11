@@ -210,7 +210,7 @@ ROLES = [
     ("R1", "Nguyễn Vũ Việt Anh", "feat/logging-pii", check_r1),
     ("R2", "Nguyễn Minh Đạt", "feat/tracing-prompt", check_r2),
     ("R3", "Nguyễn Văn Quân", "feat/dashboard-slo-alert", check_r3),
-    ("R4", "Nguyễn Kim Quy", "feat/incident-report", check_r4),
+    ("R4", "Nguyễn Kim Quý", "feat/incident-report", check_r4),
 ]
 
 

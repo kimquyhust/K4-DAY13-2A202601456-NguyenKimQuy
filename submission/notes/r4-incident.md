@@ -1,4 +1,4 @@
-# Notes R4 — Incident, Report & Demo (Nguyễn Kim Quy)
+# Notes R4 — Incident, Report & Demo (Nguyễn Kim Quý)
 
 Trạng thái: **diễn tập xong, chờ R1/R2 merge để chạy lại lấy evidence cuối.**
 Ngày diễn tập: 2026-08-11.
@@ -131,12 +131,12 @@ Khi R1 merge xong, chạy lại đúng hai pha ở mục 2 rồi thay số vào 
 
 | Phút | Người | Nội dung |
 |---|---|---|
-| 0:00–0:45 | Kim Quy | Bối cảnh + kiến trúc + `/health` chạy thật |
+| 0:00–0:45 | Kim Quý | Bối cảnh + kiến trúc + `/health` chạy thật |
 | 0:45–1:45 | Việt Anh | Một request → correlation ID trong response header → cùng ID trong `data/logs.jsonl` → dòng log đã che PII |
 | 1:45–2:45 | Minh Đạt | Trace waterfall, metadata prompt name/label/version, thao tác rollback |
 | 2:45–3:30 | Văn Quân | Dashboard 6 panel, chỉ threshold line, giải thích vì sao dùng p95 |
-| 3:30–4:45 | Kim Quy | Bật incident live → p95 vượt 2000 ms → mở trace chậm → grep log cùng correlation ID → kết luận root cause + fix + preventive |
-| 4:45–5:00 | Kim Quy | Alert nào sẽ bắt được sự cố này lần sau |
+| 3:30–4:45 | Kim Quý | Bật incident live → p95 vượt 2000 ms → mở trace chậm → grep log cùng correlation ID → kết luận root cause + fix + preventive |
+| 4:45–5:00 | Kim Quý | Alert nào sẽ bắt được sự cố này lần sau |
 
 Chuẩn bị trước khi demo: giải phóng port 8000, `rm -f data/logs.jsonl` rồi chạy một lượt load test sạch, mở sẵn tab Langfuse và tab dashboard.
 

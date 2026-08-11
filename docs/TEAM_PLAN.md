@@ -10,7 +10,7 @@ Luật vàng chống conflict: **một file chỉ có một chủ sở hữu**. 
 | **R1 — Logging & PII** | **Nguyễn Vũ Việt Anh** | `feat/logging-pii` | A1 (10đ) + B (40đ cá nhân) |
 | **R2 — Tracing & Prompt Version** | **Nguyễn Minh Đạt** | `feat/tracing-prompt` | A1 (10đ) + B |
 | **R3 — Dashboard, SLO & Alert** | **Nguyễn Văn Quân** | `feat/dashboard-slo-alert` | A1 (10đ) + B |
-| **R4 — Incident, Report & Demo** | **Nguyễn Kim Quy (leader)** | `feat/incident-report` | A2 (10đ) + A3 (20đ) + B |
+| **R4 — Incident, Report & Demo** | **Nguyễn Kim Quý (leader)** | `feat/incident-report` | A2 (10đ) + A3 (20đ) + B |
 
 Leader kiêm release manager: review + merge mọi PR, và là người **duy nhất** được sửa file dùng chung (`requirements.txt`, `README.md`, `.gitignore`, `.env.example`, `submission/REPORT.md`).
 
@@ -57,7 +57,7 @@ Không ai viết thẳng vào `submission/REPORT.md`. Mỗi người viết file
 | Việt Anh | `submission/notes/r1-logging-pii.md` |
 | Minh Đạt | `submission/notes/r2-tracing-prompt.md` |
 | Văn Quân | `submission/notes/r3-dashboard-slo.md` |
-| Kim Quy | `submission/notes/r4-incident.md` |
+| Kim Quý | `submission/notes/r4-incident.md` |
 
 Leader gộp vào `REPORT.md` cuối buổi. Ảnh evidence đặt tên có tiền tố vai trò: `submission/evidence/r1-*.png`, `r2-*.png`, `r3-*.png`, `r4-*.png`.
 
@@ -72,8 +72,8 @@ Leader gộp vào `REPORT.md` cuối buổi. Ảnh evidence đặt tên có ti�
 | `config/alert_rules.yaml`, `config/slo.yaml`, `config/dashboard.yaml` | Văn Quân |
 | `docs/alerts.md`, `docs/dashboard-spec.md`, `dashboard/**` (thư mục mới) | Văn Quân |
 | `tests/test_dashboard_validator.py`, `tests/test_alert_rules.py` (file mới) | Văn Quân |
-| `submission/REPORT.md`, `docs/TEAM_PLAN.md`, `docs/mock-debug-qa.md` | Kim Quy |
-| `requirements.txt`, `README.md`, `.gitignore`, `.env.example` | Kim Quy |
+| `submission/REPORT.md`, `docs/TEAM_PLAN.md`, `docs/mock-debug-qa.md` | Kim Quý |
+| `requirements.txt`, `README.md`, `.gitignore`, `.env.example` | Kim Quý |
 | `app/metrics.py`, `app/schemas.py`, `app/incidents.py`, `app/challenge.py`, `app/mock_*.py`, `scripts/**` | Không ai sửa (cần thì báo leader) |
 | `config/challenge.json` | **CẤM sửa** |
 
@@ -359,7 +359,7 @@ p95 khác mean thế nào, vì sao dùng p95 chứ không dùng trung bình? Sym
 
 ---
 
-## 8. Task card — Nguyễn Kim Quy (R4 · `feat/incident-report`, leader)
+## 8. Task card — Nguyễn Kim Quý (R4 · `feat/incident-report`, leader)
 
 ### Trước buổi lab (đã xong)
 
@@ -423,7 +423,7 @@ Mỗi bước phải kèm bằng chứng cụ thể:
 
 ## 9. Timeline 4 giờ
 
-| Thời gian | Việt Anh (R1) | Minh Đạt (R2) | Văn Quân (R3) | Kim Quy (R4) |
+| Thời gian | Việt Anh (R1) | Minh Đạt (R2) | Văn Quân (R3) | Kim Quý (R4) |
 |---|---|---|---|---|
 | 0:00–0:30 | Setup + baseline `validate_logs` | Setup + nối Langfuse, `/health` true | Setup + đọc dashboard contract | Chia việc, xác nhận ai cũng chạy được app |
 | 0:30–1:30 | **Xong 4 TODO logging/PII** → push → báo leader | Tạo prompt v1/v2, gắn label | Dựng `dashboard/app.py` từ log baseline | Review + merge PR R1, báo cả nhóm rebase |

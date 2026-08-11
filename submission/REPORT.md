@@ -8,7 +8,8 @@
 
 - Tên nhóm: K4 — 2A202601456
 - Repository URL: https://github.com/kimquyhust/K4-DAY13-2A202601456-NguyenKimQuy
-- Commit SHA cuối: ⏳ điền SHA của commit cuối trên `main` khi nộp
+- Commit SHA hoàn thiện nội dung: `ebf67550ef04db0b3ac597a3fdc189622d2feaf1` (nhánh `main`)
+- Commit SHA cuối cùng trên `main` là commit điền chính dòng này — lấy bằng `git rev-parse HEAD` sau khi push, và đó là SHA nộp trên Codelabs.
 - Thành viên và vai trò:
 
 | Thành viên | Vai trò | Branch |
@@ -16,7 +17,7 @@
 | Nguyễn Vũ Việt Anh | R1 — Logging & PII | `feat/logging-pii` |
 | Nguyễn Minh Đạt | R2 — Tracing & Prompt Version | `feat/tracing-prompt` |
 | Nguyễn Văn Quân | R3 — Dashboard, SLO & Alert | `feat/dashboard-slo-alert` |
-| Nguyễn Kim Quy | R4 — Incident, Report & Demo (leader) | `feat/incident-report` |
+| Nguyễn Kim Quý | R4 — Incident, Report & Demo (leader) | `feat/incident-report` |
 
 ## 2. Kết quả kỹ thuật
 
@@ -107,7 +108,7 @@ Số liệu baseline đối chứng: `submission/evidence/r4-analyze-logs-baseli
 | Nguyễn Vũ Việt Anh | Correlation ID qua `contextvars`, enrich 5 field metadata, `scrub_event` đệ quy, pattern passport/địa chỉ VN, test PII | `5a5c6b8`, `07775d7`, `fdefc20`, `ece6447`, `a030ec6`, `a35057f` | Thứ tự processor của structlog quyết định file log có sạch hay không; và pattern PII quá rộng sẽ redact nhầm text kỹ thuật, làm mất manh mối khi điều tra |
 | Nguyễn Minh Đạt | Langfuse tracing, prompt v1/v2 + label/rollback, log `prompt_resolved` nối trace ↔ log, `clear_contextvars` trong `finally` | `cc2ed89`, `332e77b`, `ca11fb0`, `6705b2d`, `36d1cdb` | Trace và log chỉ hữu ích khi nối được với nhau; một event log mang `trace_id` + `prompt_version` là cầu nối rẻ nhất giữa hai hệ thống |
 | Nguyễn Văn Quân | Dashboard Streamlit 6 panel, `config/slo.yaml`, 3 alert rule + runbook `docs/alerts.md`, `tests/test_alert_rules.py` | `d34cac6`, `526dd5f`, `ce559da` | Ngưỡng alert và ngưỡng SLO không nhất thiết bằng nhau: alert phải kêu sớm hơn SLO thì mới còn thời gian xử lý trước khi cháy error budget |
-| Nguyễn Kim Quy | Kế hoạch nhóm và luật merge, dựng môi trường, `scripts/analyze_logs.py` + `scripts/check_progress.py` và 14 test, điều tra challenge, merge 4 nhánh và hoàn thiện báo cáo | `cb5bacd`, `cd81f1a`, `e610025`, `01f2011`, `2d75bce`, `87dcc1b`, `08e1059`, `dbcbf68`, `246d93e`, `fe36808`, `e9d3be3` | Metric do app tự ghi có thể che giấu độ trễ người dùng thật khi tầng xử lý chặn event loop; phải đối chiếu nhiều tầng đo trước khi kết luận |
+| Nguyễn Kim Quý | Kế hoạch nhóm và luật merge, dựng môi trường, `scripts/analyze_logs.py` + `scripts/check_progress.py` và 14 test, điều tra challenge, merge 4 nhánh và hoàn thiện báo cáo | `cb5bacd`, `cd81f1a`, `e610025`, `01f2011`, `2d75bce`, `87dcc1b`, `08e1059`, `dbcbf68`, `246d93e`, `fe36808`, `e9d3be3` | Metric do app tự ghi có thể che giấu độ trễ người dùng thật khi tầng xử lý chặn event loop; phải đối chiếu nhiều tầng đo trước khi kết luận |
 
 ## 8. Ghi chú merge
 
