@@ -1,0 +1,59 @@
+$ grep 'req-fd24948a' data/logs.jsonl | python -m json.tool
+
+{
+  "service": "api",
+  "payload": {
+    "message_preview": "How should an engineer investigate tail latency?"
+  },
+  "event": "request_received",
+  "feature": "monitoring",
+  "correlation_id": "req-fd24948a",
+  "model": "claude-sonnet-4-5",
+  "user_id_hash": "cb22af258a5e",
+  "session_id": "k4-challenge-s02",
+  "env": "dev",
+  "level": "info",
+  "ts": "2026-08-11T13:19:30.258268Z"
+}
+
+{
+  "service": "agent",
+  "payload": {
+    "prompt_name": "day13-chat",
+    "prompt_label": "production",
+    "prompt_version": "local-v1",
+    "prompt_source": "local",
+    "trace_id": null
+  },
+  "event": "prompt_resolved",
+  "feature": "monitoring",
+  "correlation_id": "req-fd24948a",
+  "model": "claude-sonnet-4-5",
+  "user_id_hash": "cb22af258a5e",
+  "session_id": "k4-challenge-s02",
+  "env": "dev",
+  "level": "info",
+  "ts": "2026-08-11T13:19:32.764836Z"
+}
+
+{
+  "service": "api",
+  "latency_ms": 2660,
+  "tokens_in": 34,
+  "tokens_out": 127,
+  "cost_usd": 0.002007,
+  "quality_score": 0.9,
+  "payload": {
+    "answer_preview": "Starter answer. Teams should improve this output logic and add better quality ch..."
+  },
+  "event": "response_sent",
+  "feature": "monitoring",
+  "correlation_id": "req-fd24948a",
+  "model": "claude-sonnet-4-5",
+  "user_id_hash": "cb22af258a5e",
+  "session_id": "k4-challenge-s02",
+  "env": "dev",
+  "level": "info",
+  "ts": "2026-08-11T13:19:32.920046Z"
+}
+

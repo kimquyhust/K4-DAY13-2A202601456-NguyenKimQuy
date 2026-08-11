@@ -1,0 +1,8 @@
+$ grep -E 'student@vinuni|0987654321|4111 1111 1111 1111' data/logs.jsonl
+(khong co ket qua - 0 PII leak)
+
+$ grep REDACTED data/logs.jsonl
+
+{"ts": "2026-08-11T13:18:44.264585Z", "correlation_id": "req-4c7481f7", "event": "request_received", "payload": {"message_preview": "What is your refund policy? My email is [REDACTED_EMAIL]"}}
+{"ts": "2026-08-11T13:18:44.894997Z", "correlation_id": "req-c322523c", "event": "request_received", "payload": {"message_preview": "Here is my phone [REDACTED_PHONE_VN], what should be logged?"}}
+{"ts": "2026-08-11T13:18:45.524264Z", "correlation_id": "req-37794112", "event": "request_received", "payload": {"message_preview": "What is the policy for PII and credit card [REDACTED_CREDIT_CARD]?"}}
