@@ -30,13 +30,23 @@ class RecordingLangfuseClient:
         self.generation_updates.append(kwargs)
 
 
+class RecordingLogger:
+    def __init__(self) -> None:
+        self.events: list[tuple[str, dict]] = []
+
+    def info(self, event: str, **kwargs) -> None:
+        self.events.append((event, kwargs))
+
+
 def test_agent_links_prompt_version_to_trace_and_generation(monkeypatch) -> None:
     monkeypatch.setenv("LANGFUSE_PUBLIC_KEY", "test-public-key")
     monkeypatch.setenv("LANGFUSE_SECRET_KEY", "test-secret-key")
     monkeypatch.setenv("LANGFUSE_PROMPT_NAME", "day13-chat")
     monkeypatch.setenv("LANGFUSE_PROMPT_LABEL", "production")
     client = RecordingLangfuseClient()
+    logger = RecordingLogger()
     monkeypatch.setattr(agent_module, "get_langfuse_client", lambda: client)
+    monkeypatch.setattr(agent_module, "log", logger)
 
     agent = agent_module.LabAgent()
     agent_module.LabAgent.run.__wrapped__(
@@ -57,3 +67,18 @@ def test_agent_links_prompt_version_to_trace_and_generation(monkeypatch) -> None
     }
     assert generation_update["prompt"] is client.prompt
     assert generation_update["metadata"]["prompt_version"] == "3"
+    assert logger.events == [
+        (
+            "prompt_resolved",
+            {
+                "service": "agent",
+                "payload": {
+                    "prompt_name": "day13-chat",
+                    "prompt_label": "production",
+                    "prompt_version": "3",
+                    "prompt_source": "langfuse",
+                    "trace_id": None,
+                },
+            },
+        )
+    ]
