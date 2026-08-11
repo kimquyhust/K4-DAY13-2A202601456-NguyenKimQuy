@@ -433,3 +433,4 @@ Mỗi bước phải kèm bằng chứng cụ thể:
 - **`prompt_source: local-fallback`** trong trace → sai key hoặc sai tên biến template, không phải lỗi code.
 - **`data/logs.jsonl` cộng dồn qua nhiều lần chạy** → dashboard và validator lẫn dữ liệu cũ. Xoá file trước mỗi lần đo chính thức, nhất là trước baseline của challenge.
 - **Chạy challenge sớm khi chưa merge R1** → log thiếu correlation ID, không chứng minh được luồng Metrics → Traces → Logs.
+
