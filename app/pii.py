@@ -8,10 +8,12 @@ PII_PATTERNS: dict[str, str] = {
     "phone_vn": r"(?<!\d)(?:\+84|0)(?:[ .-]?\d){9}(?!\d)",
     "cccd": r"\b\d{12}\b",
     "credit_card": r"\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b",
-    "passport": r"(?i)(?<![\w-])(?:[a-z]\d{7}|[a-z]{2}\d{7})(?!\w)",
+    "passport_vn": r"(?i)(?<![\w-])(?:[a-z]\d{7}|[a-z]{2}\d{7})(?!\w)",
     "address_vn": (
-        r"(?i)\b(?:địa\s*chỉ|dia\s*chi|thường\s*trú|thuong\s*tru|"
-        r"tạm\s*trú|tam\s*tru)\s*:?\s*[^;\n]+"
+        r"(?i)(?:\b(?:địa\s*chỉ|dia\s*chi|thường\s*trú|thuong\s*tru|"
+        r"tạm\s*trú|tam\s*tru)\s*:?\s*[^;\n]+|"
+        r"\b(?:số nhà|đường|phường|quận)\b[ \t]*[^\s,;。!?]{2,}"
+        r"(?:[ \t]+[^\s,;。!?]{1,}){0,3})"
     ),
 }
 
