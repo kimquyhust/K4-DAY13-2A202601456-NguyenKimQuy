@@ -87,9 +87,10 @@ có hiệu lực trong vòng `cache_ttl_seconds` (60 s).
 
 ## Evidence
 
-- [`../evidence/r2-prompt-traces.md`](../evidence/r2-prompt-traces.md) — 4 trace ID + link Langfuse.
-- ⏳ Còn thiếu 3 ảnh phải chụp tay từ giao diện Langfuse: `r2-trace-list.png`,
-  `r2-trace-waterfall.png`, `r2-rollback-before.png` + `r2-rollback-after.png`.
+- [`../evidence/r2-prompt-traces.md`](../evidence/r2-prompt-traces.md) — 4 trace ID + link Langfuse, kèm kết quả kiểm chứng lại bằng API.
+- `../evidence/r2-trace-list.png` — danh sách trace có metadata, tags và session ID.
+- `../evidence/r2-trace-prompt-metadata.png` — metadata prompt gắn trên trace.
+- `../evidence/r2-rollback-before.png` + `../evidence/r2-rollback-after.png` — label `production` v2 → rollback về v1.
 
 ## Self-check
 

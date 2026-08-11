@@ -40,10 +40,23 @@ Khi có `LANGFUSE_PUBLIC_KEY`/`LANGFUSE_SECRET_KEY` trong `.env`, trường `tra
 
 Test bảo vệ hành vi này: `tests/test_agent_prompt_trace.py`.
 
-## Còn thiếu — cần chụp thủ công trước khi nộp
+## Ảnh chụp từ giao diện Langfuse
 
-Ba ảnh dưới đây phải chụp từ giao diện Langfuse, không sinh được từ CLI:
+- `r2-trace-list.png` — danh sách trace, mỗi dòng có Metadata, Trace Tags (`lab`, `claude-sonnet-4-5`), Session ID `s01`–`s10` và Cost.
+- `r2-trace-prompt-metadata.png` — chi tiết một trace: `Prompt: day13-chat - v1`, `Session: r2-two-labels`, latency 2.09 s, và bảng metadata có `prompt_name`, `prompt_label`, `prompt_version`, `prompt_source`, `query_preview`, `doc_count`.
+- `r2-rollback-before.png` — label `production` đang gắn trên **v2**.
+- `r2-rollback-after.png` — sau rollback, `production` về **v1**; v2 chỉ còn `latest` + `staging`.
 
-- `r2-trace-list.png` — danh sách tối thiểu 10 trace có metadata.
-- `r2-trace-waterfall.png` — waterfall của một trace (thấy rõ span retrieval và generation).
-- `r2-rollback-before.png` / `r2-rollback-after.png` — màn hình đổi label `production` v1 → v2 rồi rollback về v1.
+## Kiểm chứng lại bằng API (2026-08-11)
+
+`auth_check()` trả `True` với host `https://cloud.langfuse.com`. Truy vấn `trace.list` và
+`prompts.list` cho kết quả:
+
+- Tổng **114 traces** trong project.
+- Phân bố theo `(prompt_label, prompt_version)`: `production/1` → 77, `production/2` → 1,
+  `staging/2` → 5, `production/local-v1` → 31 (các lần chạy fallback trước khi cấu hình xong key).
+- Prompt `day13-chat`: versions `[1, 2]`, labels `['latest', 'production', 'staging']`.
+- Cả 4 trace ID trong bảng trên đều `trace.get` thành công và trả đúng cặp label/version đã khai.
+
+Con số `production/2` = 1 chính là trace `21cfce66c33bfe447919b18a21f516a1` — bằng chứng
+`production` đã từng trỏ v2 trước khi rollback.

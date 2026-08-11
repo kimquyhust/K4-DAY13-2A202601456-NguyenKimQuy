@@ -1,8 +1,8 @@
 # Báo cáo Day 13 Observability
 
 > Trạng thái: đã merge cả 4 nhánh vào `main`. Số liệu dưới đây được đo lại trên bản merge
-> ngày 2026-08-11, không phải số cũ của từng nhánh. Còn đúng **3 ảnh Langfuse** phải chụp
-> thủ công trước khi nộp — xem mục 4.
+> ngày 2026-08-11, không phải số cũ của từng nhánh. Evidence đã đủ; chỉ còn điền commit SHA
+> cuối ở mục 1 khi push.
 
 ## 1. Thông tin nhóm
 
@@ -45,7 +45,7 @@ python -m pytest -q                    # 45 passed
 - Evidence correlation ID: `submission/evidence/r1-log-correlation-id.png` (và bản text `.txt`) — trọn vòng đời request `req-fd24948a`: `request_received` → `prompt_resolved` → `response_sent`, cả ba record cùng một `correlation_id`.
 - Evidence PII redaction: `submission/evidence/r1-pii-redacted.png` (và `.txt`) — email, số điện thoại VN và số thẻ đều thành `[REDACTED_*]`; `grep` chuỗi PII gốc trong `data/logs.jsonl` trả về rỗng.
 - Evidence `validate_logs.py`: `submission/evidence/r1-validate-logs.png` (và `.txt`).
-- Evidence trace waterfall: ⏳ R2 — cần chụp `submission/evidence/r2-trace-waterfall.png` từ Langfuse.
+- Evidence trace và metadata: `submission/evidence/r2-trace-list.png` (danh sách trace có metadata, tag `lab`/`claude-sonnet-4-5`, session ID) và `r2-trace-prompt-metadata.png` (panel metadata của một trace: `prompt_name: day13-chat`, `prompt_label: production`, `prompt_version: 1`, `prompt_source: langfuse`, `query_preview` đã scrub, `doc_count`).
 - Giải thích một span đáng chú ý: span retrieval trong request chậm chiếm ~2,5 s trên tổng ~2,66 s (≈94% thời gian), trong khi span generation giữ nguyên ~0,15 s. Đây là cơ sở khoanh vùng root cause về tầng retrieval chứ không phải model.
 
 Ghi chú kỹ thuật của leader: PII đã đạt PASS ngay từ baseline vì `/chat` chỉ log preview qua
@@ -65,12 +65,14 @@ thêm với vai trò defense-in-depth cho các field không đi qua `summarize_t
 - Bằng chứng đổi label / rollback:
   - trước rollback (`production` → v2): [`21cfce66c33bfe447919b18a21f516a1`](https://cloud.langfuse.com/project/cmsob02dn0100ad0hubskvz4q/traces/21cfce66c33bfe447919b18a21f516a1)
   - sau rollback (`production` về v1): [`79009643d7361472c8a95cdf2f60bb29`](https://cloud.langfuse.com/project/cmsob02dn0100ad0hubskvz4q/traces/79009643d7361472c8a95cdf2f60bb29)
+- Ảnh bằng chứng rollback: `submission/evidence/r2-rollback-before.png` — label `production` đang gắn trên **v2** ("Day 13 candidate prompt v2 with grounding and PII constraints"); `submission/evidence/r2-rollback-after.png` — sau rollback, `production` trở về **v1** ("Day 13 baseline prompt v1"), v2 chỉ còn `latest` + `staging`.
 - Chi tiết: [evidence/r2-prompt-traces.md](evidence/r2-prompt-traces.md).
 - Nối trace ↔ log: `app/agent.py` ghi event `prompt_resolved` mang `prompt_name`, `prompt_label`, `prompt_version`, `prompt_source` và `trace_id`, nên từ một dòng log tra ngược ra đúng trace trên Langfuse. Test bảo vệ: `tests/test_agent_prompt_trace.py`.
 
-**⏳ Còn thiếu trước khi nộp — ba ảnh phải chụp tay từ giao diện Langfuse:**
-`r2-trace-list.png` (danh sách ≥10 trace), `r2-trace-waterfall.png`, và
-`r2-rollback-before.png` + `r2-rollback-after.png`.
+Kiểm chứng lại qua Langfuse API ngày 2026-08-11: project có **114 traces**, prompt `day13-chat`
+có versions `[1, 2]` với labels `production` / `staging` / `latest`; cả 4 trace ID nêu trên đều
+tồn tại và trả về đúng cặp label/version như đã khai (`21cfce66…` trả `production` v2 — đúng là
+trace trước rollback).
 
 ## 5. Dashboard, SLO và alerts
 
